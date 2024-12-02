@@ -1,50 +1,37 @@
-from datetime import datetime
+from utils import input_with_validation, validate_non_empty, validate_date_format, validate_priority
 
 
 def add_task(manager):
-    while True:
-        title = input(f"\nНазвание: ").strip()
-        if not title:
-            print("\nОшибка: Название не может быть пустым.")
-            continue
-        break
+    title = input_with_validation(
+        prompt="\nНазвание: ",
+        error_message="Ошибка: Название не может быть пустым.",
+        validation_func=validate_non_empty
+    )
 
-    while True:
-        description = input(f"Описание: ").strip()
-        if not description:
-            print("\nОшибка: Описание не может быть пустым.")
-            continue
-        break
+    description = input_with_validation(
+        prompt="Описание: ",
+        error_message="Ошибка: Описание не может быть пустым.",
+        validation_func=validate_non_empty
+    )
 
-    while True:
-        category = input(f"Категория: ").strip()
-        if not category:
-            print("\nОшибка: Категория не может быть пустой.")
-            continue
-        break
+    category = input_with_validation(
+        prompt="Категория: ",
+        error_message="Ошибка: Категория не может быть пустой.",
+        validation_func=validate_non_empty
+    )
 
-    while True:
-        due_date = input(f"Срок (дд-мм-гггг): ").strip()
-        try:
-            # Проверка формата даты
-            datetime.strptime(due_date, "%d-%m-%Y")
-            break
-        except ValueError:
-            raise ValueError(f"\nОшибка: Некорректный формат даты. Введите дату в формате дд-мм-гггг.")
+    due_date = input_with_validation(
+        prompt="Срок (дд-мм-гггг): ",
+        error_message="Ошибка: Некорректный формат даты. Введите дату в формате дд-мм-гггг.",
+        validation_func=lambda x: validate_date_format(x, "%d-%m-%Y")
+    )
 
-    while True:
-        priority = input(f"Приоритет (1 - Низкий, 2 - Средний, 3 - Высокий): ").strip()
-        if priority == '1':
-            priority = "Низкий"
-            break
-        elif priority == '2':
-            priority = "Средний"
-            break
-        elif priority == '3':
-            priority = "Высокий"
-            break
-        else:
-            print(f"\nОшибка: Введите 1, 2 или 3.")
+    priority = input_with_validation(
+        prompt="Приоритет (1 - Низкий, 2 - Средний, 3 - Высокий): ",
+        error_message="Ошибка: Введите 1, 2 или 3.",
+        validation_func=validate_priority
+    )
 
-    manager.add_task(title, description, category, due_date, priority)
-    print(f"\nЗадача добавлена!")
+    priority_map = {"1": "Низкий", "2": "Средний", "3": "Высокий"}
+    manager.add_task(title, description, category, due_date, priority_map[priority])
+    print("\nЗадача добавлена!")
