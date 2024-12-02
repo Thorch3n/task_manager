@@ -1,80 +1,57 @@
-import pytest
-from models import Task
-from datetime import datetime
+from models import TaskManager
+from handlers import add_task, edit_task, delete_task, complete_task, search_tasks, view_tasks
+from typing import Callable, Dict
 
 
-@pytest.fixture
-def task() -> Task:
+def main() -> None:
     """
-    Фикстура для создания экземпляра задачи, который будет использоваться в тестах.
+    Главная функция, которая запускает менеджер задач.
 
-    :return: Экземпляр задачи Task с заданными параметрами.
+    Инициализирует экземпляр TaskManager и предлагает пользователю выбрать одно из действий.
     """
-    return Task(1, "Задача 1", "Описание задачи 1", "Работа", "31-12-2024", "Низкий")
+    manager = TaskManager('data.json')
 
-
-def test_task_initialization(task: Task) -> None:
-    """
-    Тест для проверки правильной инициализации задачи.
-
-    :param task: Экземпляр задачи, переданный через фикстуру.
-    """
-    assert task.id == 1
-    assert task.title == "Задача 1"
-    assert task.description == "Описание задачи 1"
-    assert task.category == "Работа"
-    assert task.due_date == "31-12-2024"
-    assert task.priority == "Низкий"
-    assert task.status == "Не выполнена"
-
-
-def test_task_due_date_conversion(task: Task) -> None:
-    """
-    Тест для проверки правильной конверсии строки даты в объект datetime.
-
-    :param task: Экземпляр задачи, переданный через фикстуру.
-    """
-    task_due_date = datetime.strptime(task.due_date, "%d-%m-%Y")
-    assert task_due_date == datetime(2024, 12, 31)
-
-
-def test_task_to_dict(task: Task) -> None:
-    """
-    Тест для проверки метода to_dict у задачи.
-
-    :param task: Экземпляр задачи, переданный через фикстуру.
-    """
-    task_dict = task.to_dict()
-    assert isinstance(task_dict, dict)
-    assert task_dict["id"] == task.id
-    assert task_dict["title"] == task.title
-    assert task_dict["description"] == task.description
-    assert task_dict["category"] == task.category
-    assert task_dict["due_date"] == task.due_date
-    assert task_dict["priority"] == task.priority
-    assert task_dict["status"] == task.status
-
-
-def test_task_from_dict() -> None:
-    """
-    Тест для проверки метода from_dict у задачи.
-
-    :return: None
-    """
-    task_data = {
-        "id": 2,
-        "title": "Задача 2",
-        "description": "Описание задачи 2",
-        "category": "Дом",
-        "due_date": "01-01-2025",
-        "priority": "Средний",
-        "status": "В процессе"
+    actions: Dict[str, Callable[[], None]] = {
+        '1': lambda: view_tasks.view_tasks(manager),
+        '2': lambda: view_tasks.view_tasks_by_category(manager),
+        '3': lambda: add_task.add_task(manager),
+        '4': lambda: edit_task.edit_task(manager),
+        '5': lambda: complete_task.complete_task(manager),
+        '6': lambda: delete_task.delete_task(manager),
+        '7': lambda: search_tasks.search_tasks(manager),
+        '8': lambda: break_program()  # Простой выход с break
     }
-    task = Task.from_dict(task_data)
-    assert task.id == task_data["id"]
-    assert task.title == task_data["title"]
-    assert task.description == task_data["description"]
-    assert task.category == task_data["category"]
-    assert task.due_date == task_data["due_date"]
-    assert task.priority == task_data["priority"]
-    assert task.status == task_data["status"]
+
+    while True:
+        # Отображение меню
+        print(
+            f"\nМенеджер задач:\n"
+            f"1. Просмотреть все задачи\n"
+            f"2. Просмотреть задачи по категории\n"
+            f"3. Добавить задачу\n"
+            f"4. Редактировать задачу\n"
+            f"5. Отметить задачу как выполненную\n"
+            f"6. Удалить задачу\n"
+            f"7. Поиск задач\n"
+            f"8. Выход\n"
+        )
+
+        # Получаем выбор пользователя
+        choice: str = input("Выберите действие: ").strip()
+
+        # Выполняем соответствующее действие, если выбор существует в словаре
+        action = actions.get(choice)
+        if action:
+            action()
+        else:
+            print(f"\nНеверный выбор, попробуйте снова.")
+
+
+def break_program() -> None:
+    """Выход из программы с помощью break."""
+    print("\nВыход из программы.")
+    raise SystemExit
+
+
+if __name__ == "__main__":
+    main()
