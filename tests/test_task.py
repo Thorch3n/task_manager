@@ -4,13 +4,21 @@ from datetime import datetime
 
 
 @pytest.fixture
-def task():
-    """Создание фикстуры для задачи для использования в тестах."""
+def task() -> Task:
+    """
+    Создание фикстуры для задачи, которая будет использоваться в тестах.
+
+    :return: Экземпляр задачи Task с заданными параметрами.
+    """
     return Task(1, "Задача 1", "Описание задачи 1", "Работа", "31-12-2024", "Низкий")
 
 
-def test_task_initialization(task):
-    """Проверка инициализации задачи."""
+def test_task_initialization(task: Task) -> None:
+    """
+    Тест для проверки правильной инициализации задачи.
+
+    :param task: Экземпляр задачи, переданный через фикстуру.
+    """
     assert task.id == 1
     assert task.title == "Задача 1"
     assert task.description == "Описание задачи 1"
@@ -20,14 +28,22 @@ def test_task_initialization(task):
     assert task.status == "Не выполнена"
 
 
-def test_task_due_date_conversion(task):
-    """Проверка конверсии строки даты в объект datetime."""
+def test_task_due_date_conversion(task: Task) -> None:
+    """
+    Тест для проверки правильной конверсии строки даты в объект datetime.
+
+    :param task: Экземпляр задачи, переданный через фикстуру.
+    """
     task_due_date = datetime.strptime(task.due_date, "%d-%m-%Y")
     assert task_due_date == datetime(2024, 12, 31)
 
 
-def test_task_to_dict(task):
-    """Проверка метода to_dict у задачи."""
+def test_task_to_dict(task: Task) -> None:
+    """
+    Тест для проверки метода to_dict у задачи.
+
+    :param task: Экземпляр задачи, переданный через фикстуру.
+    """
     task_dict = task.to_dict()
     assert isinstance(task_dict, dict)
     assert task_dict["id"] == task.id
@@ -39,8 +55,12 @@ def test_task_to_dict(task):
     assert task_dict["status"] == task.status
 
 
-def test_task_from_dict():
-    """Проверка метода from_dict у задачи."""
+def test_task_from_dict() -> None:
+    """
+    Тест для проверки метода from_dict у задачи.
+
+    :return: None
+    """
     task_data = {
         "id": 2,
         "title": "Задача 2",
