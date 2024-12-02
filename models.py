@@ -186,10 +186,10 @@ class TaskManager:
         if due_date:
             try:
                 # Проверка формата даты
-                datetime.strptime(due_date, "%d-%m-%Y")
+                datetime.strptime(due_date, "%Y-%m-%d")
                 task.due_date = due_date
             except ValueError:
-                raise ValueError("Некорректный формат даты. Введите дату в формате дд-мм-гггг.")
+                raise ValueError("Некорректный формат даты. Введите дату в формате гггг-мм-дд.")
         if priority:
             task.priority = priority
 

@@ -56,8 +56,8 @@ def edit_task(manager: "TaskManager") -> None:
     # Редактирование срока выполнения
     due_date: str = input_with_validation(
         prompt=f"Срок ({task.due_date}): ",
-        error_message="Ошибка: Некорректный формат даты. Введите дату в формате дд-мм-гггг.",
-        validation_func=lambda x: validate_date_format(x, "%d-%m-%Y") if x else True
+        error_message="Ошибка: Некорректный формат даты. Введите дату в формате гггг-мм-дд.",
+        validation_func=lambda x: validate_date_format(x, "%Y-%m-%d") if x else True
     ).strip()
     if due_date:
         task.due_date = due_date

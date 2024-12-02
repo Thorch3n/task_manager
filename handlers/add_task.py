@@ -34,9 +34,9 @@ def add_task(manager: "TaskManager") -> None:
 
     # Запрашиваем срок выполнения задачи с проверкой на корректный формат даты
     due_date: str = input_with_validation(
-        prompt="Срок (дд-мм-гггг): ",
-        error_message="Ошибка: Некорректный формат даты. Введите дату в формате дд-мм-гггг.",
-        validation_func=lambda x: validate_date_format(x, "%d-%m-%Y")
+        prompt="Срок (гггг-мм-дд): ",
+        error_message="Ошибка: Некорректный формат даты. Введите дату в формате гггг-мм-дд.",
+        validation_func=lambda x: validate_date_format(x, "%Y-%m-%d")
     )
 
     # Запрашиваем приоритет задачи с проверкой на допустимые значения (1, 2, 3)
